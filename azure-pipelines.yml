@@ -6,7 +6,7 @@ trigger:
 pr: none
 
 pool:
-  name: vikas007_agent
+  name: vikas_007
 
 variables:
   terraformVersion: '1.15.8'
