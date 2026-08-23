@@ -1,0 +1,185 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pr: none
+
+pool:
+  name: vikas007_agent
+
+variables:
+  terraformVersion: '1.15.8'
+  azureServiceConnection: 'YOUR-AZURE-SERVICE-CONNECTION'
+
+stages:
+
+# ============================================================
+# STAGE 1 - PREPROD
+# ============================================================
+
+- stage: PreProd
+  displayName: 'Terraform PreProd'
+
+  jobs:
+
+  - job: Terraform_PreProd
+    displayName: 'Terraform PreProd Plan & Apply'
+
+    steps:
+
+    # --------------------------------------------------------
+    # Terraform Installation
+    # --------------------------------------------------------
+
+    - task: TerraformInstaller@1
+      displayName: 'Install Terraform'
+      inputs:
+        terraformVersion: '$(terraformVersion)'
+
+
+    # --------------------------------------------------------
+    # Terraform Init
+    # --------------------------------------------------------
+
+    - task: TerraformTaskV5@5
+      displayName: 'Terraform Init - PreProd'
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
+        backendServiceArm: '$(azureServiceConnection)'
+        backendAzureRmResourceGroupName: 'YOUR-TFSTATE-RG'
+        backendAzureRmStorageAccountName: 'YOUR-TFSTATE-STORAGE'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'preprod.tfstate'
+
+
+    # --------------------------------------------------------
+    # Terraform Validate
+    # --------------------------------------------------------
+
+    - task: TerraformTaskV5@5
+      displayName: 'Terraform Validate - PreProd'
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
+
+
+    # --------------------------------------------------------
+    # Terraform Plan
+    # --------------------------------------------------------
+
+    - task: TerraformTaskV5@5
+      displayName: 'Terraform Plan - PreProd'
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
+        environmentServiceNameAzureRM: '$(azureServiceConnection)'
+        commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
+
+
+    # --------------------------------------------------------
+    # Terraform Apply
+    # --------------------------------------------------------
+
+    - task: TerraformTaskV5@5
+      displayName: 'Terraform Apply - PreProd'
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
+        environmentServiceNameAzureRM: '$(azureServiceConnection)'
+        commandOptions: 'tfplan'
+
+
+# ============================================================
+# STAGE 2 - PROD
+# ============================================================
+
+- stage: Prod
+  displayName: 'Terraform Production'
+
+  dependsOn: PreProd
+  condition: succeeded()
+
+  jobs:
+
+  - deployment: Terraform_Prod
+    displayName: 'Terraform Prod Plan & Apply'
+
+    environment: 'terraform-prod'
+
+    strategy:
+      runOnce:
+        deploy:
+
+          steps:
+
+          # --------------------------------------------------
+          # Terraform Installation
+          # --------------------------------------------------
+
+          - task: TerraformInstaller@1
+            displayName: 'Install Terraform'
+            inputs:
+              terraformVersion: '$(terraformVersion)'
+
+
+          # --------------------------------------------------
+          # Terraform Init
+          # --------------------------------------------------
+
+          - task: TerraformTaskV5@5
+            displayName: 'Terraform Init - Prod'
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
+              backendServiceArm: '$(azureServiceConnection)'
+              backendAzureRmResourceGroupName: 'YOUR-TFSTATE-RG'
+              backendAzureRmStorageAccountName: 'YOUR-TFSTATE-STORAGE'
+              backendAzureRmContainerName: 'tfstate'
+              backendAzureRmKey: 'prod.tfstate'
+
+
+          # --------------------------------------------------
+          # Terraform Validate
+          # --------------------------------------------------
+
+          - task: TerraformTaskV5@5
+            displayName: 'Terraform Validate - Prod'
+            inputs:
+              provider: 'azurerm'
+              command: 'validate'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
+
+
+          # --------------------------------------------------
+          # Terraform Plan
+          # --------------------------------------------------
+
+          - task: TerraformTaskV5@5
+            displayName: 'Terraform Plan - Prod'
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
+              environmentServiceNameAzureRM: '$(azureServiceConnection)'
+              commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
+
+
+          # --------------------------------------------------
+          # Terraform Apply
+          # --------------------------------------------------
+
+          - task: TerraformTaskV5@5
+            displayName: 'Terraform Apply - Prod'
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
+              environmentServiceNameAzureRM: '$(azureServiceConnection)'
+              commandOptions: 'tfplan'
