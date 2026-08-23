@@ -10,7 +10,7 @@ pool:
 
 variables:
   terraformVersion: '1.15.8'
-  azureServiceConnection: 'YOUR-AZURE-SERVICE-CONNECTION'
+  azureServiceConnection: 'vikas'
 
 stages:
 
@@ -42,7 +42,7 @@ stages:
     # Terraform Init
     # --------------------------------------------------------
 
-    - task: TerraformTaskV5@5
+    - task: TerraformTask@5
       displayName: 'Terraform Init - PreProd'
       inputs:
         provider: 'azurerm'
@@ -59,7 +59,7 @@ stages:
     # Terraform Validate
     # --------------------------------------------------------
 
-    - task: TerraformTaskV5@5
+    - task: TerraformTask@5
       displayName: 'Terraform Validate - PreProd'
       inputs:
         provider: 'azurerm'
@@ -71,7 +71,7 @@ stages:
     # Terraform Plan
     # --------------------------------------------------------
 
-    - task: TerraformTaskV5@5
+    - task: TerraformTask@5
       displayName: 'Terraform Plan - PreProd'
       inputs:
         provider: 'azurerm'
@@ -85,7 +85,7 @@ stages:
     # Terraform Apply
     # --------------------------------------------------------
 
-    - task: TerraformTaskV5@5
+    - task: TerraformTask@5
       displayName: 'Terraform Apply - PreProd'
       inputs:
         provider: 'azurerm'
@@ -132,7 +132,7 @@ stages:
           # Terraform Init
           # --------------------------------------------------
 
-          - task: TerraformTaskV5@5
+          - task: TerraformTask@5
             displayName: 'Terraform Init - Prod'
             inputs:
               provider: 'azurerm'
@@ -149,7 +149,7 @@ stages:
           # Terraform Validate
           # --------------------------------------------------
 
-          - task: TerraformTaskV5@5
+          - task: TerraformTask@5
             displayName: 'Terraform Validate - Prod'
             inputs:
               provider: 'azurerm'
@@ -161,7 +161,7 @@ stages:
           # Terraform Plan
           # --------------------------------------------------
 
-          - task: TerraformTaskV5@5
+          - task: TerraformTask@5
             displayName: 'Terraform Plan - Prod'
             inputs:
               provider: 'azurerm'
@@ -175,7 +175,7 @@ stages:
           # Terraform Apply
           # --------------------------------------------------
 
-          - task: TerraformTaskV5@5
+          - task: TerraformTask@5
             displayName: 'Terraform Apply - Prod'
             inputs:
               provider: 'azurerm'
