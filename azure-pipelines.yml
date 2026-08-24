@@ -32,6 +32,16 @@ stages:
     # Terraform Installation
     # --------------------------------------------------------
 
+    - task: CmdLine@2
+      displayName: 'Test Terraform Executable'
+      inputs:
+        script: |
+          echo Testing Terraform
+          where terraform
+          terraform version 
+          "C:\Devops insiders\03_azure_DevOps_practices\vsts-agent-win-x64-5.278.0\_work\_tool\terraform\1.15.8\x64\terraform.exe" version
+
+
     - task: TerraformInstaller@1
       displayName: 'Install Terraform'
       inputs:
