@@ -143,8 +143,8 @@ stages:
               workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
               backendServiceArm: '$(azureServiceConnection)'
               # TODO: replace with your real Prod backend storage details
-              backendAzureRmResourceGroupName: 'YOUR-TFSTATE-RG'
-              backendAzureRmStorageAccountName: 'YOUR-TFSTATE-STORAGE'
+              backendAzureRmResourceGroupName: 'b18g35-common-rg'
+              backendAzureRmStorageAccountName: 'b18g35storageaccount2'
               backendAzureRmContainerName: 'tfstate'
               backendAzureRmKey: 'prod.tfstate'
 
