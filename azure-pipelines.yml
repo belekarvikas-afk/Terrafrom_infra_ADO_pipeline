@@ -6,7 +6,7 @@ trigger:
 pr: none
 
 pool:
-  name: vikas_007
+  name: Default
 
 variables:
   # NOTE: pick a real, existing Terraform version.
