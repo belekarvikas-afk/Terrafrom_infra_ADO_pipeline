@@ -47,12 +47,23 @@ stages:
       inputs:
         terraformVersion: '$(terraformVersion)'
 
-
+    - task: CmdLine@2
+      displayName: 'TEST - Run Terraform Directly'
+      inputs:
+        script: |
+          echo ===== Terraform Direct Test =====
+          whoami
+          echo.
+          echo ===== Check File =====
+          dir "C:\Devops insiders\03_azure_DevOps_practices\vsts-agent-win-x64-5.278.0\_work\_tool\terraform\1.15.8\x64\terraform.exe"
+          echo.
+          echo ===== Run Terraform =====
+          "C:\Devops insiders\03_azure_DevOps_practices\vsts-agent-win-x64-5.278.0\_work\_tool\terraform\1.15.8\x64\terraform.exe" version
     # --------------------------------------------------------
     # Terraform Init
     # --------------------------------------------------------
 
-    - task: TerraformTaskV2@2
+    - task: TerraformTask@5
       displayName: 'Terraform Init - PreProd'
       inputs:
         provider: 'azurerm'
