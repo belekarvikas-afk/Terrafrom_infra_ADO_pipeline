@@ -9,7 +9,10 @@ pool:
   name: vikas_007
 
 variables:
-  terraformVersion: '1.15.8'
+  # NOTE: pick a real, existing Terraform version.
+  # Check https://releases.hashicorp.com/terraform/ for the latest,
+  # or just use 'latest' - TerraformInstaller@1 supports it.
+  terraformVersion: 'latest'
   azureServiceConnection: 'vikas'
 
 stages:
@@ -31,38 +34,24 @@ stages:
     # --------------------------------------------------------
     # Terraform Installation
     # --------------------------------------------------------
-
-    - task: CmdLine@2
-      displayName: 'Test Terraform Executable'
-      inputs:
-        script: |
-          echo Testing Terraform
-          where terraform
-          terraform version 
-          "C:\Devops insiders\03_azure_DevOps_practices\vsts-agent-win-x64-5.278.0\_work\_tool\terraform\1.15.8\x64\terraform.exe" version
-
-
     - task: TerraformInstaller@1
       displayName: 'Install Terraform'
       inputs:
         terraformVersion: '$(terraformVersion)'
 
+    # Optional sanity check - now correctly AFTER install,
+    # and using the tool via PATH instead of a hardcoded path.
     - task: CmdLine@2
-      displayName: 'TEST - Run Terraform Directly'
+      displayName: 'Verify Terraform Install'
       inputs:
         script: |
-          echo ===== Terraform Direct Test =====
-          whoami
-          echo.
-          echo ===== Check File =====
-          dir "C:\Devops insiders\03_azure_DevOps_practices\vsts-agent-win-x64-5.278.0\_work\_tool\terraform\1.15.8\x64\terraform.exe"
-          echo.
-          echo ===== Run Terraform =====
-          "C:\Devops insiders\03_azure_DevOps_practices\vsts-agent-win-x64-5.278.0\_work\_tool\terraform\1.15.8\x64\terraform.exe" version
+          echo Testing Terraform
+          where terraform
+          terraform version
+
     # --------------------------------------------------------
     # Terraform Init
     # --------------------------------------------------------
-
     - task: TerraformTask@5
       displayName: 'Terraform Init - PreProd'
       inputs:
@@ -75,11 +64,9 @@ stages:
         backendAzureRmContainerName: 'vkcontainer'
         backendAzureRmKey: 'vikasADO.tfstate'
 
-
     # --------------------------------------------------------
     # Terraform Validate
     # --------------------------------------------------------
-
     - task: TerraformTask@5
       displayName: 'Terraform Validate - PreProd'
       inputs:
@@ -87,11 +74,9 @@ stages:
         command: 'validate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
 
-
     # --------------------------------------------------------
     # Terraform Plan
     # --------------------------------------------------------
-
     - task: TerraformTask@5
       displayName: 'Terraform Plan - PreProd'
       inputs:
@@ -101,11 +86,9 @@ stages:
         environmentServiceNameAzureRM: '$(azureServiceConnection)'
         commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
 
-
     # --------------------------------------------------------
     # Terraform Apply
     # --------------------------------------------------------
-
     - task: TerraformTask@5
       displayName: 'Terraform Apply - PreProd'
       inputs:
@@ -131,6 +114,8 @@ stages:
   - deployment: Terraform_Prod
     displayName: 'Terraform Prod Plan & Apply'
 
+    # Attach approvals/checks to this environment in
+    # Pipelines -> Environments -> terraform-prod -> Approvals and checks
     environment: 'terraform-prod'
 
     strategy:
@@ -142,17 +127,14 @@ stages:
           # --------------------------------------------------
           # Terraform Installation
           # --------------------------------------------------
-
           - task: TerraformInstaller@1
             displayName: 'Install Terraform'
             inputs:
               terraformVersion: '$(terraformVersion)'
 
-
           # --------------------------------------------------
           # Terraform Init
           # --------------------------------------------------
-
           - task: TerraformTask@5
             displayName: 'Terraform Init - Prod'
             inputs:
@@ -160,16 +142,15 @@ stages:
               command: 'init'
               workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
               backendServiceArm: '$(azureServiceConnection)'
+              # TODO: replace with your real Prod backend storage details
               backendAzureRmResourceGroupName: 'YOUR-TFSTATE-RG'
               backendAzureRmStorageAccountName: 'YOUR-TFSTATE-STORAGE'
               backendAzureRmContainerName: 'tfstate'
               backendAzureRmKey: 'prod.tfstate'
 
-
           # --------------------------------------------------
           # Terraform Validate
           # --------------------------------------------------
-
           - task: TerraformTask@5
             displayName: 'Terraform Validate - Prod'
             inputs:
@@ -177,11 +158,9 @@ stages:
               command: 'validate'
               workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
 
-
           # --------------------------------------------------
           # Terraform Plan
           # --------------------------------------------------
-
           - task: TerraformTask@5
             displayName: 'Terraform Plan - Prod'
             inputs:
@@ -191,11 +170,9 @@ stages:
               environmentServiceNameAzureRM: '$(azureServiceConnection)'
               commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
 
-
           # --------------------------------------------------
           # Terraform Apply
           # --------------------------------------------------
-
           - task: TerraformTask@5
             displayName: 'Terraform Apply - Prod'
             inputs:
