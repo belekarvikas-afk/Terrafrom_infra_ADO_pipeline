@@ -52,7 +52,7 @@ stages:
     # Terraform Init
     # --------------------------------------------------------
 
-    - task: TerraformTask@5
+    - task: TerraformTaskV2@2
       displayName: 'Terraform Init - PreProd'
       inputs:
         provider: 'azurerm'
