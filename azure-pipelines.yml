@@ -49,10 +49,10 @@ stages:
         command: 'init'
         workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
         backendServiceArm: '$(azureServiceConnection)'
-        backendAzureRmResourceGroupName: 'YOUR-TFSTATE-RG'
-        backendAzureRmStorageAccountName: 'YOUR-TFSTATE-STORAGE'
-        backendAzureRmContainerName: 'tfstate'
-        backendAzureRmKey: 'preprod.tfstate'
+        backendAzureRmResourceGroupName: 'b18g35-common-rg'
+        backendAzureRmStorageAccountName: 'b18g35storageaccount2'
+        backendAzureRmContainerName: 'vkcontainer'
+        backendAzureRmKey: 'vikasADO.tfstate'
 
 
     # --------------------------------------------------------
