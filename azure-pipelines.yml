@@ -6,11 +6,14 @@ trigger:
 pr: none
 
 pool:
-  name: vikas007_agent
+  name: Default
 
 variables:
-  terraformVersion: '1.15.8'
-  azureServiceConnection: 'YOUR-AZURE-SERVICE-CONNECTION'
+  # NOTE: pick a real, existing Terraform version.
+  # Check https://releases.hashicorp.com/terraform/ for the latest,
+  # or just use 'latest' - TerraformInstaller@1 supports it.
+  terraformVersion: 'latest'
+  azureServiceConnection: 'vikas'
 
 stages:
 
@@ -31,18 +34,25 @@ stages:
     # --------------------------------------------------------
     # Terraform Installation
     # --------------------------------------------------------
-
     - task: TerraformInstaller@1
       displayName: 'Install Terraform'
       inputs:
         terraformVersion: '$(terraformVersion)'
 
+    # Optional sanity check - now correctly AFTER install,
+    # and using the tool via PATH instead of a hardcoded path.
+    - task: CmdLine@2
+      displayName: 'Verify Terraform Install'
+      inputs:
+        script: |
+          echo Testing Terraform
+          where terraform
+          terraform version
 
     # --------------------------------------------------------
     # Terraform Init
     # --------------------------------------------------------
-
-    - task: TerraformTaskV5@5
+    - task: TerraformTask@5
       displayName: 'Terraform Init - PreProd'
       inputs:
         provider: 'azurerm'
@@ -54,24 +64,20 @@ stages:
         backendAzureRmContainerName: 'vkcontainer'
         backendAzureRmKey: 'vikasADO.tfstate'
 
-
     # --------------------------------------------------------
     # Terraform Validate
     # --------------------------------------------------------
-
-    - task: TerraformTaskV5@5
+    - task: TerraformTask@5
       displayName: 'Terraform Validate - PreProd'
       inputs:
         provider: 'azurerm'
         command: 'validate'
         workingDirectory: '$(System.DefaultWorkingDirectory)Enviroment/preprod'
 
-
     # --------------------------------------------------------
     # Terraform Plan
     # --------------------------------------------------------
-
-    - task: TerraformTaskV5@5
+    - task: TerraformTask@5
       displayName: 'Terraform Plan - PreProd'
       inputs:
         provider: 'azurerm'
@@ -80,12 +86,10 @@ stages:
         environmentServiceNameAzureRM: '$(azureServiceConnection)'
         commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
 
-
     # --------------------------------------------------------
     # Terraform Apply
     # --------------------------------------------------------
-
-    - task: TerraformTaskV5@5
+    - task: TerraformTask@5
       displayName: 'Terraform Apply - PreProd'
       inputs:
         provider: 'azurerm'
@@ -110,6 +114,8 @@ stages:
   - deployment: Terraform_Prod
     displayName: 'Terraform Prod Plan & Apply'
 
+    # Attach approvals/checks to this environment in
+    # Pipelines -> Environments -> terraform-prod -> Approvals and checks
     environment: 'terraform-prod'
 
     strategy:
@@ -121,47 +127,41 @@ stages:
           # --------------------------------------------------
           # Terraform Installation
           # --------------------------------------------------
-
           - task: TerraformInstaller@1
             displayName: 'Install Terraform'
             inputs:
               terraformVersion: '$(terraformVersion)'
 
-
           # --------------------------------------------------
           # Terraform Init
           # --------------------------------------------------
-
-          - task: TerraformTaskV5@5
+          - task: TerraformTask@5
             displayName: 'Terraform Init - Prod'
             inputs:
               provider: 'azurerm'
               command: 'init'
               workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               backendServiceArm: '$(azureServiceConnection)'
-              backendAzureRmResourceGroupName: 'YOUR-TFSTATE-RG'
-              backendAzureRmStorageAccountName: 'YOUR-TFSTATE-STORAGE'
+              # TODO: replace with your real Prod backend storage details
+              backendAzureRmResourceGroupName: 'b18g35-common-rg'
+              backendAzureRmStorageAccountName: 'b18g35storageaccount2'
               backendAzureRmContainerName: 'tfstate'
               backendAzureRmKey: 'prod.tfstate'
-
 
           # --------------------------------------------------
           # Terraform Validate
           # --------------------------------------------------
-
-          - task: TerraformTaskV5@5
+          - task: TerraformTask@5
             displayName: 'Terraform Validate - Prod'
             inputs:
               provider: 'azurerm'
               command: 'validate'
               workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
 
-
           # --------------------------------------------------
           # Terraform Plan
           # --------------------------------------------------
-
-          - task: TerraformTaskV5@5
+          - task: TerraformTask@5
             displayName: 'Terraform Plan - Prod'
             inputs:
               provider: 'azurerm'
@@ -170,12 +170,10 @@ stages:
               environmentServiceNameAzureRM: '$(azureServiceConnection)'
               commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
 
-
           # --------------------------------------------------
           # Terraform Apply
           # --------------------------------------------------
-
-          - task: TerraformTaskV5@5
+          - task: TerraformTask@5
             displayName: 'Terraform Apply - Prod'
             inputs:
               provider: 'azurerm'
