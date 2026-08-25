@@ -9,7 +9,7 @@ pool:
   name: 'Default'
 
 variables:
-  terraformVersion: '1.15.8'
+  terraformVersion: '1.15.9'
   azureServiceConnection: 'vikas'
 
 stages:
@@ -44,7 +44,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)Enviroment/preprod'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod'
         backendServiceArm: '$(azureServiceConnection)'
         backendAzureRmResourceGroupName: 'b18g35-common-rg'
         backendAzureRmStorageAccountName: 'b18g35storageaccount2'
@@ -59,7 +59,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)Enviroment/preprod'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod'
 
     # --------------------------------------------------------
     # Terraform Plan
