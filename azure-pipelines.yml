@@ -57,7 +57,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod'
+        workingDirectory: '$(System.DefaultWorkingDirectory)Enviroment/preprod'
         backendServiceArm: '$(azureServiceConnection)'
         backendAzureRmResourceGroupName: 'b18g35-common-rg'
         backendAzureRmStorageAccountName: 'b18g35storageaccount2'
@@ -72,7 +72,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod'
+        workingDirectory: '$(System.DefaultWorkingDirectory)Enviroment/preprod'
 
     # --------------------------------------------------------
     # Terraform Plan
@@ -140,7 +140,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               backendServiceArm: '$(azureServiceConnection)'
               # TODO: replace with your real Prod backend storage details
               backendAzureRmResourceGroupName: 'b18g35-common-rg'
@@ -156,7 +156,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'validate'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod/'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
 
           # --------------------------------------------------
           # Terraform Plan
@@ -166,7 +166,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod/'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               environmentServiceNameAzureRM: '$(azureServiceConnection)'
               commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
 
@@ -178,6 +178,6 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'apply'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod/'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               environmentServiceNameAzureRM: '$(azureServiceConnection)'
               commandOptions: 'tfplan'
