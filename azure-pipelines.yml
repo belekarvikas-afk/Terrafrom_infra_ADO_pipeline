@@ -6,11 +6,11 @@ trigger:
 pr: none
 
 pool:
-  name: vikas007_agent
+  name: 'Default'
 
 variables:
   terraformVersion: '1.15.8'
-  azureServiceConnection: 'YOUR-AZURE-SERVICE-CONNECTION'
+  azureServiceConnection: 'vikas'
 
 stages:
 
@@ -52,7 +52,7 @@ stages:
         backendAzureRmResourceGroupName: 'b18g35-common-rg'
         backendAzureRmStorageAccountName: 'b18g35storageaccount2'
         backendAzureRmContainerName: 'vkcontainer'
-        backendAzureRmKey: 'vikasADO.tfstate'
+        backendAzureRmKey: 'vikasADOPreProd.tfstate'
 
 
     # --------------------------------------------------------
@@ -139,10 +139,10 @@ stages:
               command: 'init'
               workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               backendServiceArm: '$(azureServiceConnection)'
-              backendAzureRmResourceGroupName: 'YOUR-TFSTATE-RG'
-              backendAzureRmStorageAccountName: 'YOUR-TFSTATE-STORAGE'
-              backendAzureRmContainerName: 'tfstate'
-              backendAzureRmKey: 'prod.tfstate'
+              backendAzureRmResourceGroupName: 'b18g35-common-rg'
+              backendAzureRmStorageAccountName: 'b18g35storageaccount2'
+              backendAzureRmContainerName: 'vkcontainer'
+              backendAzureRmKey: 'vikasADOprod.tfstate'
 
 
           # --------------------------------------------------
