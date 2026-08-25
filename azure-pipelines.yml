@@ -11,14 +11,7 @@ pool:
 
 variables:
   terraformVersion: '1.15.8'
-  name: Default
-
-variables:
-  # NOTE: pick a real, existing Terraform version.
-  # Check https://releases.hashicorp.com/terraform/ for the latest,
-  # or just use 'latest' - TerraformInstaller@1 supports it.
-  terraformVersion: 'latest'
-  azureServiceConnection: 'vikas'
+  azureServiceConnection: 'Default'
 
 stages:
 
@@ -43,16 +36,6 @@ stages:
       displayName: 'Install Terraform'
       inputs:
         terraformVersion: '$(terraformVersion)'
-
-    # Optional sanity check - now correctly AFTER install,
-    # and using the tool via PATH instead of a hardcoded path.
-    - task: CmdLine@2
-      displayName: 'Verify Terraform Install'
-      inputs:
-        script: |
-          echo Testing Terraform
-          where terraform
-          terraform version
 
     # --------------------------------------------------------
     # Terraform Init
