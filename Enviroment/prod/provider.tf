@@ -7,9 +7,9 @@ terraform {
   }
   backend "azurerm" {
     resource_group_name  = "b18g35-common-rg"
-    storage_account_name = "b18g35storageaccount"
-    container_name       = "hubspoke"
-    key                  = "vikashubandspoke.tfstate"
+    storage_account_name = "b18g35storageaccount2"
+    container_name       = "vkcontainer"
+    key                  = "vikasADO.tfstate"
   }
 }
 

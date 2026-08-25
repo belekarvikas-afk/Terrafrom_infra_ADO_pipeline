@@ -6,6 +6,11 @@ trigger:
 pr: none
 
 pool:
+
+  name: 'Default'
+
+variables:
+  terraformVersion: '1.15.8'
   name: Default
 
 variables:
@@ -62,7 +67,7 @@ stages:
         backendAzureRmResourceGroupName: 'b18g35-common-rg'
         backendAzureRmStorageAccountName: 'b18g35storageaccount2'
         backendAzureRmContainerName: 'vkcontainer'
-        backendAzureRmKey: 'vikasADO.tfstate'
+        backendAzureRmKey: 'vikasADOPreProd.tfstate'
 
     # --------------------------------------------------------
     # Terraform Validate
@@ -142,11 +147,11 @@ stages:
               command: 'init'
               workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               backendServiceArm: '$(azureServiceConnection)'
-              # TODO: replace with your real Prod backend storage details
               backendAzureRmResourceGroupName: 'b18g35-common-rg'
               backendAzureRmStorageAccountName: 'b18g35storageaccount2'
-              backendAzureRmContainerName: 'tfstate'
-              backendAzureRmKey: 'prod.tfstate'
+              backendAzureRmContainerName: 'vkcontainer'
+              backendAzureRmKey: 'vikasADOprod.tfstate'
+
 
           # --------------------------------------------------
           # Terraform Validate
