@@ -47,7 +47,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
+        workingDirectory: '$(System.DefaultWorkingDirectory)Enviroment/preprod'
         backendServiceArm: '$(azureServiceConnection)'
         backendAzureRmResourceGroupName: 'b18g35-common-rg'
         backendAzureRmStorageAccountName: 'b18g35storageaccount2'
@@ -64,7 +64,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
+        workingDirectory: '$(System.DefaultWorkingDirectory)Enviroment/preprod'
 
 
     # --------------------------------------------------------
@@ -76,7 +76,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod'
         environmentServiceNameAzureRM: '$(azureServiceConnection)'
         commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
 
@@ -90,7 +90,7 @@ stages:
       inputs:
         provider: 'azurerm'
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/preprod'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/preprod'
         environmentServiceNameAzureRM: '$(azureServiceConnection)'
         commandOptions: 'tfplan'
 
@@ -137,7 +137,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'init'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               backendServiceArm: '$(azureServiceConnection)'
               backendAzureRmResourceGroupName: 'YOUR-TFSTATE-RG'
               backendAzureRmStorageAccountName: 'YOUR-TFSTATE-STORAGE'
@@ -154,7 +154,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'validate'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
 
 
           # --------------------------------------------------
@@ -166,7 +166,7 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'plan'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               environmentServiceNameAzureRM: '$(azureServiceConnection)'
               commandOptions: '-var-file="terraform.tfvars" -out=tfplan'
 
@@ -180,6 +180,6 @@ stages:
             inputs:
               provider: 'azurerm'
               command: 'apply'
-              workingDirectory: '$(System.DefaultWorkingDirectory)/Terraform_infra_ADO_pipeline/Enviroment/prod'
+              workingDirectory: '$(System.DefaultWorkingDirectory)/Enviroment/prod'
               environmentServiceNameAzureRM: '$(azureServiceConnection)'
               commandOptions: 'tfplan'
